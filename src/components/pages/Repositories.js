@@ -8,7 +8,8 @@ const Repositories = ({
 }) => {
   return (
     <>
-    <h1>Repositories For "{searchQuery}"</h1>
+    <Link className='back-button' to='/'>Back To Search</Link>
+    <h1>Showing Repositories For "{searchQuery}"</h1>
     <ul id="grid">
       {repositoryData
         .sort((a, b) => b.stars - a.stars)
@@ -43,6 +44,8 @@ const Repositories = ({
                 </div>
               </div>
               <Link
+              className="button"
+              type="button"
                 onClick={() => getRepositoryCommits(searchQuery, repo.name)}
                 to={`/commits`}
               >

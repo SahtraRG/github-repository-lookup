@@ -7,7 +7,7 @@ import "./App.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 const octokit = new Octokit({
-  auth: "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",
+  auth: process.env.REACT_APP_GITHUB_API_KEY,
 });
 
 const App = () => {
