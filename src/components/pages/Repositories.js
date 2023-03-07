@@ -8,7 +8,9 @@ const Repositories = ({
 }) => {
   return (
     <>
+    <div className='header-and-btns'>
     <Link className='back-button' to='/'>Back To Search</Link>
+    </div>
     <h1>Showing Repositories For "{searchQuery}"</h1>
     <ul id="grid">
       {repositoryData

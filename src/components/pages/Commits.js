@@ -3,8 +3,10 @@ import { Link } from "react-router-dom";
 const Commits = ({ commitData, currentRepo }) => {
   return (
     <>
+    <div className='header-and-btns'>
     <Link className='back-button' to='/repositories'> Back To Repositories</Link>
     <Link className='back-button' to='/'>Back To Search</Link>
+    </div>
       <h1>Top 10 Most Recent Commits In "{currentRepo}"</h1>
       <ul id="commit-list">
         {commitData.map((commit) => {
