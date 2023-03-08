@@ -5,18 +5,21 @@ import Commits from "./components/pages/Commits";
 import Landing from "./components/pages/Landing";
 import "./App.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BeatLoader } from "react-spinners";
 
 const octokit = new Octokit({
   auth: process.env.REACT_APP_GITHUB_API_KEY,
 });
 
 const App = () => {
+  const [isLoading, setIsLoading] = useState(false);
   const [repositoryData, setRepositoryData] = useState([]);
   const [commitData, setCommitData] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [currentRepo, setCurrentRepo] = useState("")
+  const [currentRepo, setCurrentRepo] = useState("");
 
   const getOrganizationRepos = async function (org) {
+    setIsLoading(true);
     await octokit
       .request(`GET /orgs/${org}/repos`, {
         org: org,
@@ -39,10 +42,12 @@ const App = () => {
           });
         }
         setRepositoryData(repoData);
+        setIsLoading(false);
       });
   };
 
   const getRepositoryCommits = async function (org, repo) {
+    setIsLoading(true)
     await octokit
       .request(`GET /repos/${org}/${repo}/commits`, {
         org: org,
@@ -50,7 +55,7 @@ const App = () => {
         per_page: 10,
       })
       .then((response) => {
-        setCurrentRepo(repo)
+        setCurrentRepo(repo);
         return response.data;
       })
       .then((data) => {
@@ -64,40 +69,48 @@ const App = () => {
           });
         }
         setCommitData(commitData);
-        
+        setIsLoading(false)
       });
   };
   return (
-    <Router>
-      <Routes>
-
-        <Route
-          path="/"
-          element={
-            <Landing
-              searchQuery={searchQuery}
-              setSearchQuery={setSearchQuery}
-              getOrganizationRepos={getOrganizationRepos}
+    <>
+      {isLoading && <div id='loading'><BeatLoader color="#ffffff" size="48" /></div>}
+      {!isLoading && (
+        <Router>
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <Landing
+                  searchQuery={searchQuery}
+                  setSearchQuery={setSearchQuery}
+                  getOrganizationRepos={getOrganizationRepos}
+                />
+              }
             />
-          }
-        />
 
-        <Route
-          path={`/repositories`}
-          element={
-            <Repositories
-              repositoryData={repositoryData}
-              searchQuery={searchQuery}
-              getRepositoryCommits={getRepositoryCommits}
-              currentRepo={currentRepo}
+            <Route
+              path={`/repositories`}
+              element={
+                <Repositories
+                  repositoryData={repositoryData}
+                  searchQuery={searchQuery}
+                  getRepositoryCommits={getRepositoryCommits}
+                  currentRepo={currentRepo}
+                />
+              }
             />
-          }
-        />
 
-        <Route path={`/commits`} element={<Commits commitData={commitData} currentRepo={currentRepo} />} />
-
-      </Routes>
-    </Router>
+            <Route
+              path={`/commits`}
+              element={
+                <Commits commitData={commitData} currentRepo={currentRepo} />
+              }
+            />
+          </Routes>
+        </Router>
+      )}
+    </>
   );
 };
 

@@ -127,3 +127,9 @@ h1 {
   left: 24px;
   top: 32px;
 }
+#loading {
+  height: 98vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
